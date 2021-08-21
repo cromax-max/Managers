@@ -1,9 +1,12 @@
 package ru.netology.manager;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import ru.netology.domain.Movie;
+import ru.netology.repository.AfficheRepository;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.mockito.Mockito.doReturn;
 
 class AfficheManagerTest {
     private Movie movie1 = new Movie(1, "movie1", "Cartoon", "imgUrl");
@@ -18,40 +21,34 @@ class AfficheManagerTest {
     private Movie movie10 = new Movie(10, "movie10", "Silent movie", "imgUrl");
     private Movie movie11 = new Movie(11, "movie10", "Silent movie", "imgUrl");
 
+    AfficheRepository repository = Mockito.mock(AfficheRepository.class);
+
     @Test
     void shouldShowDefaultLimit() {
-        AfficheManager manager = new AfficheManager();
-        manager.add(movie1);
-        manager.add(movie2);
-        manager.add(movie3);
-        manager.add(movie4);
-        manager.add(movie5);
-        manager.add(movie6);
-        manager.add(movie7);
-        manager.add(movie8);
-        manager.add(movie9);
-        manager.add(movie10);
-        manager.add(movie11);
+        AfficheManager manager = new AfficheManager(repository);
+        Movie[] returned = {movie1, movie2, movie3, movie4, movie5, movie6, movie7, movie8, movie9, movie10, movie11};
+        doReturn(returned).when(repository).findAll();
+//
         Movie[] expected = {movie11, movie10, movie9, movie8, movie7, movie6, movie5, movie4, movie3, movie2};
         assertArrayEquals(expected, manager.getMovies());
     }
 
     @Test
-    void shouldShowSetupLimit () {
-        AfficheManager manager = new AfficheManager(3);
-        manager.add(movie1);
-        manager.add(movie2);
-        manager.add(movie3);
+    void shouldShowSetupLimit() {
+        AfficheManager manager = new AfficheManager(3, repository);
+        Movie[] returned = {movie1, movie2, movie3};
+        doReturn(returned).when(repository).findAll();
+
         Movie[] expected = {movie3, movie2, movie1};
         assertArrayEquals(expected, manager.getMovies());
     }
 
     @Test
     void shouldShowLessLimit() {
-        AfficheManager manager = new AfficheManager(5);
-        manager.add(movie1);
-        manager.add(movie2);
-        manager.add(movie3);
+        AfficheManager manager = new AfficheManager(5, repository);
+        Movie[] returned = {movie1, movie2, movie3};
+        doReturn(returned).when(repository).findAll();
+
         Movie[] expected = {movie3, movie2, movie1};
         assertArrayEquals(expected, manager.getMovies());
     }

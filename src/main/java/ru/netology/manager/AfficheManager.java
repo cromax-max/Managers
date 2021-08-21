@@ -1,33 +1,32 @@
 package ru.netology.manager;
 
 import ru.netology.domain.Movie;
+import ru.netology.repository.AfficheRepository;
 
 public class AfficheManager {
-    int limit;
-    private Movie[] movies = new Movie[0];
+    private int limit;
+    private AfficheRepository repository;
 
-    public AfficheManager() {
-        this(10);
+    public AfficheManager(AfficheRepository repository) {
+        this(10, repository);
     }
 
-    public AfficheManager(int limit) {
+    public AfficheManager(int limit, AfficheRepository repository) {
         this.limit = limit;
+        this.repository = repository;
     }
 
     public void add(Movie movie) {
-        Movie[] tmp = new Movie[movies.length + 1];
-        System.arraycopy(movies, 0, tmp, 0, movies.length);
-        tmp[tmp.length - 1] = movie;
-        movies = tmp;
+        repository.save(movie);
     }
 
     public Movie[] getMovies() {
-        if (limit > movies.length) {
-            limit = movies.length;
+        if (limit > repository.findAll().length) {
+            limit = repository.findAll().length;
         }
         Movie[] result = new Movie[limit];
         for (int i = 0; i < limit; i++) {
-            result[i] = movies[movies.length - 1 - i];
+            result[i] = repository.findAll()[repository.findAll().length - 1 - i];
         }
         return result;
     }
